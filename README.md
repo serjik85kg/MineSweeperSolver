@@ -1,0 +1,2 @@
+# MineSweeperSolver
+test task
