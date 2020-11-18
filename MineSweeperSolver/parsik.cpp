@@ -42,11 +42,11 @@ namespace parsik
 				int j = p.second;
 				if (field[i][j] == -1) // UNOPENED_CELL
 					cells.emplace(std::make_pair(i, j));
-				// logic for mines
+				// Can be extended for mines in future.
 			}
 
 			if (w < 0)
-				throw ParseException("LOW_CORRECTED_WEIGHT");
+				throw ParseException("Error, low corrected weight.");
 
 			return Group(cells, w);
 		}
@@ -76,13 +76,19 @@ namespace parsik
 		return groups;
 	}
 
-	auto parseField(/*std::istream& is*/)->std::tuple<int, int, int, int**>
+	auto parseField()->std::tuple<int, int, int, int**>
 	{
 		int N, M, mines;
 		// M - width, N - height
-		const char zap = ',';
-		char razdel;
-		std::cin >> M >> razdel >> N >> mines;
+		char comma;
+		std::cin >> M >> comma >> N >> mines;
+
+		if (comma != ',')
+			throw ParseException("Insert ',' between M and N values, as expected from task."); // temp
+
+		if ((M <= 0) || (N <= 0) || (mines <= 0))
+			throw ParseException("Negative properties. Check your input parametres.");
+
 
 		// Add exception in future //
 
@@ -94,19 +100,20 @@ namespace parsik
 			{
 				char cellInp;
 				std::cin >> cellInp;
-				if (cellInp == 'X')
+				if (cellInp == 'X') // UNOPENED CELL
 				{
 					field[i][j] = -1;
 				}
-				else
+				else if ((cellInp >= '0') && (cellInp <= '8'))
 				{
 					field[i][j] = cellInp - 48;
 				}
+				else
+				{
+					throw ParseException("Unknown symbols, input symbols must be integer values in range [0,8] or char symbol 'X' (free field)");
+				}
 				
 			}
-
-		if ((M <= 0) || (N <= 0) || (mines <= 0))
-			throw ParseException("NEGATIVE_PROPERTIES");
 
 		return std::make_tuple(M, N, mines, field);
 	}
@@ -114,15 +121,9 @@ namespace parsik
 	auto parseFile(const std::string& inputFilename)->std::tuple<int, int, int, int**>
 	{
 		std::ifstream file(inputFilename.c_str());
-		
-		//if (!file.is_open())
-		//{
-		//	throw(std::exception::exception("cannot open file"));
-		//	//std::cerr << "Cannot open " + inputFilename + " file.\n";
-		//}
 
 		if (!file.is_open())
-			throw FileException("Cannot open file");
+			throw FileException("Cannot open " + inputFilename );
 
 		int M, N, mines;
 		char comma;
@@ -132,7 +133,7 @@ namespace parsik
 			throw ParseException("Insert ',' between M and N values, as expected from task"); // just temporary for this task
 
 		if ((M <= 0) || (N <= 0) || (mines <= 0))
-			throw ParseException("Negative properties");
+			throw ParseException("Negative properties. Check your input parametres.");
 
 		int ** field = new int*[N];
 		for (int i = 0; i < N; ++i)
@@ -153,10 +154,12 @@ namespace parsik
 				}
 				else
 				{
-					throw ParseException("Unknown symbols, check the rules");
+					throw ParseException("Unknown symbols, input symbols must be integer values in range [0,8] or char symbol 'X' (free field)");
 				}
 
 			}
+
+		file.close();
 
 		return std::make_tuple(M, N, mines, field);
 	}
@@ -175,5 +178,14 @@ namespace parsik
 		auto mines = std::get<2>(fieldData);
 		auto groups = getGroups(field, N, M);
 		return Game(field, N, M, groups, mines);
+	}
+
+	auto writeToFile(const std::pair<int,int>& randomPair, const std::string& output)->void
+	{
+		std::ofstream os(output.c_str());
+
+		os << randomPair.second << ", " << randomPair.first << "\n";
+
+		os.close();
 	}
 }

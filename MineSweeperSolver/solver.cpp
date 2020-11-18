@@ -140,7 +140,6 @@ namespace solver
 		while (true)
 		{
 			auto changed = operateGroups(groups);
-			//std::cout << groups.size() << std::endl; // bylo
 			if (changed == false)
 				break;
 		}
@@ -148,7 +147,7 @@ namespace solver
 	}
 
 
-	auto mainsolver(const std::string& input)->void
+	auto mainsolver(const std::string& input, const std::string& output)->void
 	{
 		auto game = parsik::parseGame(input);
 		auto minesData = solver::solve(game.mGroups);
@@ -156,32 +155,45 @@ namespace solver
 		auto notMines = minesData.second;
 		if (notMines.size() != 0)
 		{
+			// Show full set of solutions //
 			//for (const auto& p : notMines)
 			//{
 			//	std::cout << p.second << ' ' << p.first << std::endl;
 			//}
 			auto randomPair = *std::begin(notMines);
-			std::cout << randomPair.second << ' ' << randomPair.first << '\n';
+
+			if (output.size() == 0) {
+				// Write answer to console
+				std::cout << randomPair.second << ", " << randomPair.first << '\n';
+			}
+			else
+			{
+				// Write answer to file
+				parsik::writeToFile(randomPair, output);
+			}
 		}
 		else
 		{
-			//std::cout << "GO TO PROB SECTION" << std::endl;
 			auto probs = probs::getProbs(game.mGroups);
-			//std::cout << "GET PROBS " << std::endl;
-			std::map<float, std::pair<int,int>/*, std::greater<float>*/> ordered;
+			std::map<float, std::pair<int,int>/*, std::greater<float>*/> ordered; // if we want more than one solution with the same prob, use multimap
 			for (const auto& p : probs)
 			{
 				ordered.emplace(p.second, p.first);
 			}
+			// Show full set of exclusive prob solutions //
 			//for (const auto& p : ordered)
 			//{
 			//	std::cout << "probs = " << p.first << " " << p.second.second << ' ' << p.second.first << std::endl;
 			//}
 			auto randomPair = *std::begin(ordered);
-			//std::cout << "success prob: " << 1 - randomPair.first << std::endl;
-			std::cout << randomPair.second.second << ' ' << randomPair.second.first << '\n';
-			//std::sort(probs.begin(), probs.end(),
-			//	[](const )
+			if (output.size() == 0) {
+				//std::cout << "success prob: " << 1 - randomPair.first << std::endl;
+				std::cout << randomPair.second.second << ", " << randomPair.second.first << '\n';
+			}
+			else
+			{
+				parsik::writeToFile(randomPair.second, output);
+			}
 		}
 	}
 }

@@ -18,6 +18,7 @@ namespace utils
 		}
 	};
 
+	// return true if ALL members of a are also in b
 	template <typename T, typename H>
 	bool is_subset_of(const std::unordered_set<T, H>& a, const std::unordered_set<T, H>& b)
 	{
@@ -27,6 +28,7 @@ namespace utils
 		return a.size() <= b.size() && std::all_of(a.begin(), a.end(), is_in_b);
 	}
 
+	// subtract smaller set from bigger (Requirement: bigger >= smaller)
 	template<typename T, typename H>
 	void subtract(std::unordered_set<T, H>& bigger, const std::unordered_set<T, H>& smaller)
 	{
@@ -36,6 +38,7 @@ namespace utils
 		}
 	}
 
+	// write to "out" the intersection of sets in1 and in2 //
 	template<typename T, typename H>
 	void get_intersection(std::unordered_set<T, H> &out,
 		const std::unordered_set<T, H> &in1,

@@ -14,35 +14,37 @@
 int main(int argc, char** argv)
 {
 	std::string inputfile;
-	if (argc > 2) {
-		std::cerr << "error" << std::endl;
+	std::string outputfile;
+	if (argc > 3) {
+		std::cerr << "Error command line arguments." << std::endl;
 		return -1;
 	}
 	else if (argc == 2)
 		inputfile = argv[1];
-	else
-		std::cout << argc << std::endl;
+	else if (argc == 3)
+	{
+		inputfile = argv[1];
+		outputfile = argv[2];
+	}
 
-	//const std::string testpath = "003.txt";
 	try
 	{
-		solver::mainsolver(inputfile);
+		solver::mainsolver(inputfile, outputfile);
 	}
-	catch (ParseException e)
+	catch (ParseException& e)
 	{
 		std::cerr << e.what() << std::endl;
 	}
-	catch (SolveException e)
+	catch (SolveException& e)
 	{
 		std::cerr << e.what() << std::endl;
 	}
-	catch (FileException e)
+	catch (FileException& e)
 	{
 		std::cerr << e.what() << std::endl;
 	}
 	catch (...)
 	{
 	}
-	//std::cout << std::endl;
 	system("pause");
 }

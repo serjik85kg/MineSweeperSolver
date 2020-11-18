@@ -5,7 +5,7 @@
 #include <map>
 
 typedef std::unordered_map<std::pair<int, int>, float, utils::pair_hash> unordered_probs;
-typedef std::map<std::pair<int, int>, float> ordered_probs;
+//typedef std::map<std::pair<int, int>, float> ordered_probs;
 
 namespace probs
 {

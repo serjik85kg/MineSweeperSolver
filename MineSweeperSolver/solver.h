@@ -1,7 +1,5 @@
 #pragma once
 #include "group.h"
-//#include "utils.h"
-#include <list>
 #include "parsik.h"
 #include "probs.h"
 
@@ -24,14 +22,6 @@ namespace solver
 	auto getReliableCells(const std::vector<Group>& groups)->std::pair<unordered_cells, unordered_cells>;
 	auto solve(std::vector<Group>& groups)->std::pair<unordered_cells, unordered_cells>;
 
-	auto mainsolver(const std::string& input = std::string())->void;
+	auto mainsolver(const std::string& input = std::string(), const std::string& output = std::string())->void;
 
 }
-
-//struct MinesSets
-//{
-//	MinesSets(const unordered_cells& mines, const unordered_cells& notmines)
-//		: mines(mines), notmines(notmines) {}
-//	unordered_cells mines;
-//	unordered_cells notmines;
-//};
