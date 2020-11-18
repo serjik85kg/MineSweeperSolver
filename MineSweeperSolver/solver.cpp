@@ -148,9 +148,9 @@ namespace solver
 	}
 
 
-	auto mainsolver()->void
+	auto mainsolver(const std::string& input)->void
 	{
-		auto game = parsik::parseGame();
+		auto game = parsik::parseGame(input);
 		auto minesData = solver::solve(game.mGroups);
 		auto mines = minesData.first;
 		auto notMines = minesData.second;

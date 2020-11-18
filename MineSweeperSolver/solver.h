@@ -24,7 +24,7 @@ namespace solver
 	auto getReliableCells(const std::vector<Group>& groups)->std::pair<unordered_cells, unordered_cells>;
 	auto solve(std::vector<Group>& groups)->std::pair<unordered_cells, unordered_cells>;
 
-	auto mainsolver()->void;
+	auto mainsolver(const std::string& input = std::string())->void;
 
 }
 

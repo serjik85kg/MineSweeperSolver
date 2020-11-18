@@ -1,5 +1,9 @@
 #include "parsik.h"
 
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
 namespace parsik
 {
 	auto getArea(int x, int y, int m, int n)->std::vector<std::pair<int, int>>
@@ -63,6 +67,12 @@ namespace parsik
 				}
 			}
 		}
+
+		// release memory. Rewrite it to std::vector<std::vector<int>>;
+		for (int i = 0; i < m; ++i) // m = N, n = M.
+			delete field[i];
+		delete[] field;
+
 		return groups;
 	}
 
@@ -101,9 +111,64 @@ namespace parsik
 		return std::make_tuple(M, N, mines, field);
 	}
 
-	auto parseGame()->Game
+	auto parseFile(const std::string& inputFilename)->std::tuple<int, int, int, int**>
 	{
-		auto fieldData = parseField();
+		std::ifstream file(inputFilename.c_str());
+		
+		//if (!file.is_open())
+		//{
+		//	throw(std::exception::exception("cannot open file"));
+		//	//std::cerr << "Cannot open " + inputFilename + " file.\n";
+		//}
+
+		if (!file.is_open())
+			throw FileException("Cannot open file");
+
+		int M, N, mines;
+		char comma;
+		file >> M >> comma >> N >> mines;
+		
+		if (comma != ',')
+			throw ParseException("Insert ',' between M and N values, as expected from task"); // just temporary for this task
+
+		if ((M <= 0) || (N <= 0) || (mines <= 0))
+			throw ParseException("Negative properties");
+
+		int ** field = new int*[N];
+		for (int i = 0; i < N; ++i)
+			field[i] = new int[M];
+
+		for (int i = 0; i < N; ++i)
+			for (int j = 0; j < M; ++j)
+			{
+				char cellInp;
+				file >> cellInp;
+				if (cellInp == 'X') // UNOPENED CELL
+				{
+					field[i][j] = -1;
+				}
+				else if ((cellInp >= '0') && (cellInp <= '8'))
+				{
+					field[i][j] = cellInp - 48;
+				}
+				else
+				{
+					throw ParseException("Unknown symbols, check the rules");
+				}
+
+			}
+
+		return std::make_tuple(M, N, mines, field);
+	}
+
+	auto parseGame(const std::string& filename)->Game
+	{
+		std::tuple<int, int, int, int**> fieldData;
+		if (filename.length() == 0)
+			fieldData = parseField();
+		else
+			fieldData = parseFile(filename);
+
 		auto field = std::get<3>(fieldData);
 		auto M = std::get<0>(fieldData);
 		auto N = std::get<1>(fieldData);
