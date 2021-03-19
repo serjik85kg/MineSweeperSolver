@@ -31,15 +31,7 @@ int main(int argc, char** argv)
 	{
 		solver::mainsolver(inputfile, outputfile);
 	}
-	catch (ParseException& e)
-	{
-		std::cerr << e.what() << std::endl;
-	}
-	catch (SolveException& e)
-	{
-		std::cerr << e.what() << std::endl;
-	}
-	catch (FileException& e)
+	catch (std::exception& e)
 	{
 		std::cerr << e.what() << std::endl;
 	}
